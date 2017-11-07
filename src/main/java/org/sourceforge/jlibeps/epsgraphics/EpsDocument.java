@@ -217,22 +217,22 @@ public class EpsDocument {
 			// }
 
 			final Paint paint = epsGraphics.getPaint();
-			if((paint != null) && !paint.equals(lastG.getPaint())) {
+			if(paint != null && !paint.equals(lastG.getPaint())) {
 				epsGraphics.setPaint(paint);
 			}
 
 			final Composite composite = epsGraphics.getComposite();
-			if((composite != null) && !composite.equals(lastG.getComposite())) {
+			if(composite != null && !composite.equals(lastG.getComposite())) {
 				epsGraphics.setComposite(composite);
 			}
 
 			final Font font = epsGraphics.getFont();
-			if((font != null) && !font.equals(lastG.getFont())) {
+			if(font != null && !font.equals(lastG.getFont())) {
 				epsGraphics.setFont(font);
 			}
 
 			final Stroke stroke = epsGraphics.getStroke();
-			if((stroke != null) && !stroke.equals(lastG.getStroke())) {
+			if(stroke != null && !stroke.equals(lastG.getStroke())) {
 				epsGraphics.setStroke(stroke);
 			}
 		}
@@ -409,7 +409,7 @@ public class EpsDocument {
 			// constructor. Also, this older approach does not set the scale.
 			// The translation factor may different due to differences in
 			// how, where, and when the header is placed on the page?
-			writer.write(offsetX + " " + (offsetY) + " translate\n");
+			writer.write(offsetX + " " + offsetY + " translate\n");
 
 			_writer.flush();
 
@@ -447,8 +447,8 @@ public class EpsDocument {
 		final float pageWidth = 8.5f * 72f;
 		final float pageHeight = 11f * 72f;
 		final float scaleFactor = (float) Math.min(pageWidth / originalWidth, pageHeight / originalHeight);
-		final float adjustedMinX = (float) Math.max((_minX * scaleFactor), 0d);
-		final float adjustedMinY = (float) Math.max((_minY * scaleFactor), 0d);
+		final float adjustedMinX = (float) Math.max(_minX * scaleFactor, 0d);
+		final float adjustedMinY = (float) Math.max(_minY * scaleFactor, 0d);
 		// final float adjustedMaxY = ( float ) Math.min( ( originalHeight *
 		// scaleFactor ), pageHeight );
 

@@ -569,10 +569,10 @@ public class EpsGraphics2D extends Graphics2D {
 					break;
 				case PathIterator.SEG_QUADTO:
 					// Convert the quad curve into a cubic.
-					final float _x1 = x0 + ((2 / 3f) * (x1 - x0));
-					final float _y1 = y0 + ((2 / 3f) * (y1 - y0));
-					final float _x2 = x1 + ((1 / 3f) * (x2 - x1));
-					final float _y2 = y1 + ((1 / 3f) * (y2 - y1));
+					final float _x1 = x0 + 2 / 3f * (x1 - x0);
+					final float _y1 = y0 + 2 / 3f * (y1 - y0);
+					final float _x2 = x1 + 1 / 3f * (x2 - x1);
+					final float _y2 = y1 + 1 / 3f * (y2 - y1);
 					final float _x3 = x2;
 					final float _y3 = y2;
 					append(_x1 + " " + _y1 + " " + _x2 + " " + _y2 + " " + _x3 + " " + _y3 + " curveto");
@@ -821,11 +821,11 @@ public class EpsGraphics2D extends Graphics2D {
 		StringBuilder line = new StringBuilder();
 		for(int y = 0; y < height; y++) {
 			for(int x = 0; x < width; x++) {
-				final Color color = new Color(pixels[x + (width * y)]);
+				final Color color = new Color(pixels[x + width * y]);
 
 				switch(colorMode) {
 					case BLACK_AND_WHITE:
-						if((color.getRed() + color.getGreen() + color.getBlue()) > ((255 * 1.5) - 1)) {
+						if(color.getRed() + color.getGreen() + color.getBlue() > 255 * 1.5 - 1) {
 							line.append("ff");
 						}else {
 							line.append("00");
@@ -997,7 +997,7 @@ public class EpsGraphics2D extends Graphics2D {
 			final StringBuilder buffer = new StringBuilder();
 
 			for(char ch = iterator.first(); ch != CharacterIterator.DONE; ch = iterator.next()) {
-				if((ch == '(') || (ch == ')')) {
+				if(ch == '(' || ch == ')') {
 					buffer.append('\\');
 				}
 
@@ -1024,7 +1024,7 @@ public class EpsGraphics2D extends Graphics2D {
 	 */
 	@Override
 	public void drawString(final String str, final float x, final float y) {
-		if((str != null) && !str.isEmpty()) {
+		if(str != null && !str.isEmpty()) {
 			final AttributedString attributedString = new AttributedString(str);
 			attributedString.addAttribute(TextAttribute.FONT, getFont());
 			drawString(attributedString.getIterator(), x, y);
@@ -1469,7 +1469,7 @@ public class EpsGraphics2D extends Graphics2D {
 	 */
 	@Override
 	public void setBackground(final Color color) {
-		_backgroundColor = (color != null) ? color : Color.BLACK;
+		_backgroundColor = color != null ? color : Color.BLACK;
 	}
 
 	/**
@@ -1517,14 +1517,14 @@ public class EpsGraphics2D extends Graphics2D {
 	 */
 	@Override
 	public void setColor(final Color color) {
-		_color = (color != null) ? color : Color.BLACK;
+		_color = color != null ? color : Color.BLACK;
 
 		final ColorMode colorMode = getColorMode();
 		switch(colorMode) {
 			case BLACK_AND_WHITE:
 				float bwValue = 0;
 
-				if((_color.getRed() + _color.getGreen() + _color.getBlue()) > ((255 * 1.5) - 1)) {
+				if(_color.getRed() + _color.getGreen() + _color.getBlue() > 255 * 1.5 - 1) {
 					bwValue = 1;
 				}
 
@@ -1532,25 +1532,25 @@ public class EpsGraphics2D extends Graphics2D {
 
 				break;
 			case GRAYSCALE:
-				final float grayValue = ((_color.getRed() + _color.getGreen() + _color.getBlue()) / (3 * 255f));
+				final float grayValue = (_color.getRed() + _color.getGreen() + _color.getBlue()) / (3 * 255f);
 
 				append(grayValue + " setgray");
 
 				break;
 			case COLOR_RGB:
-				append((_color.getRed() / 255f) + " " + (_color.getGreen() / 255f) + " " + (_color.getBlue() / 255f) + " setrgbcolor");
+				append(_color.getRed() / 255f + " " + _color.getGreen() / 255f + " " + _color.getBlue() / 255f + " setrgbcolor");
 
 				break;
 			case COLOR_CMYK:
 				if(Color.BLACK.equals(_color)) {
 					append("0.0 0.0 0.0 1.0 setcmykcolor");
 				}else {
-					final double c = 1 - (_color.getRed() / 255f);
-					final double m = 1 - (_color.getGreen() / 255f);
-					final double y = 1 - (_color.getBlue() / 255f);
+					final double c = 1 - _color.getRed() / 255f;
+					final double m = 1 - _color.getGreen() / 255f;
+					final double y = 1 - _color.getBlue() / 255f;
 					final double k = Math.min(Math.min(c, y), m);
 
-					append(((c - k) / (1 - k)) + " " + ((m - k) / (1 - k)) + " " + ((y - k) / (1 - k)) + " " + k + " setcmykcolor");
+					append((c - k) / (1 - k) + " " + (m - k) / (1 - k) + " " + (y - k) / (1 - k) + " " + k + " setcmykcolor");
 				}
 
 				break;
@@ -1598,7 +1598,7 @@ public class EpsGraphics2D extends Graphics2D {
 	 */
 	@Override
 	public void setFont(final Font font) {
-		_font = (font != null) ? font : Font.decode(null);
+		_font = font != null ? font : Font.decode(null);
 
 		if(!isAccurateTextMode()) {
 			append("/" + _font.getPSName() + " findfont " + _font.getSize() + " scalefont setfont");
